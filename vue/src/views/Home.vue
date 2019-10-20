@@ -8,11 +8,8 @@
 
 <script>
     var axios = require('axios');
-    import {Button} from 'ant-design-vue';
 
-    Vue.component(Button.name, Button);
 
-    import Vue from "vue";
     import HelloWorld from '@/components/HelloWorld.vue'
 
 
