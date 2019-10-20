@@ -27,8 +27,8 @@ CREATE TABLE `center_directory`  (
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `count` int(50) NULL DEFAULT NULL,
   `size` int(50) NULL DEFAULT NULL,
-  `lastOperaTime` datetime(0) NULL DEFAULT NULL,
-  `createTime` datetime(0) NULL DEFAULT NULL,
+  `lastOperaTime` datetime NULL DEFAULT NULL,
+  `createTime` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
@@ -51,7 +51,7 @@ CREATE TABLE `device_save_directory`  (
   `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '有就是存，没有就是不存',
   `deviceID` int(20) UNSIGNED NOT NULL,
   `dirID` int(20) UNSIGNED NULL DEFAULT NULL,
-  `lastDownloadTime` datetime(0) NULL DEFAULT NULL,
+  `lastDownloadTime` datetime NULL DEFAULT NULL,
   `status` bit(4) NULL DEFAULT NULL COMMENT '0 是待传输，1是传输汇总，2是传输完比，3是出错了',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `deviceID`(`deviceID`) USING BTREE,
@@ -70,7 +70,7 @@ CREATE TABLE `device_scan_directory`  (
   `deviceID` int(20) UNSIGNED NULL DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `ignore` bit(1) NULL DEFAULT NULL COMMENT '默认为0，不忽略；1为忽略',
-  `lastOpeartorTime` datetime(0) NULL DEFAULT NULL,
+  `lastOpeartorTime` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `deviceID`(`deviceID`) USING BTREE,
   CONSTRAINT `device_scan_directory_ibfk_1` FOREIGN KEY (`deviceID`) REFERENCES `devices` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE
@@ -96,7 +96,7 @@ CREATE TABLE `devices`  (
   `ideaCode` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `type` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `lastUploadTime` datetime(0) NULL DEFAULT NULL,
+  `lastUploadTime` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
@@ -111,8 +111,8 @@ CREATE TABLE `pictures`  (
   `size` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `fromDirID` int(20) UNSIGNED NOT NULL COMMENT '从哪个设备来的，存id，找不到就显示已删除设备。为0的时候是本地来的',
   `saveDirID` int(20) UNSIGNED NULL DEFAULT NULL,
-  `uploadTime` datetime(0) NULL DEFAULT NULL,
-  `createTime` datetime(0) NULL DEFAULT NULL,
+  `uploadTime` datetime NULL DEFAULT NULL,
+  `createTime` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `pictures_ibfk_1`(`fromDirID`) USING BTREE,
   INDEX `pictures_ibfk_2`(`saveDirID`) USING BTREE,
