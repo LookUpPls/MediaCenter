@@ -1,45 +1,58 @@
 <template>
     <a-layout id="components-layout-demo-custom-trigger">
-        <a-layout-sider :trigger="null" collapsible v-model="collapsed">
-            <div class="logo"/>
-            <a-menu theme="dark" mode="inline" :defaultSelectedKeys="['1']">
+        <a-layout-sider :trigger="null" collapsible v-model="collapsed" style="background: #fff" width="150" >
+            <div class="logo"><img src="./assets/logo.png" alt="" width="40px" height="40px"/></div>
+            <a-menu theme="light" mode="inline" :defaultSelectedKeys="['1']">
                 <a-menu-item key="1">
-                    <a-icon type="user"/>
-                    <span>nav 1</span>
+                    <router-link to="/">
+                        <a-icon type="picture"/>
+                        <span>相册</span>
+                    </router-link>
                 </a-menu-item>
                 <a-menu-item key="2">
-                    <a-icon type="video-camera"/>
-                    <span>nav 2</span>
+                    <router-link to="/folders">
+                        <a-icon type="folder-open"/>
+                        <span>分类</span>
+                    </router-link>
                 </a-menu-item>
                 <a-menu-item key="3">
-                    <a-icon type="upload"/>
-                    <span>nav 3</span>
+                    <router-link to="/device">
+                        <a-icon type="mobile"/>
+                        <span>设备</span>
+                    </router-link>
+                </a-menu-item>
+                <a-menu-item key="4">
+                    <router-link to="/scan">
+                        <a-icon type="security-scan"/>
+                        <span>扫描本机</span>
+                    </router-link>
+                </a-menu-item>
+                <a-menu-item key="5">
+                    <router-link to="/log">
+                        <a-icon type="profile"/>
+                        <span>操作记录</span>
+                    </router-link>
+                </a-menu-item>
+                <a-menu-item key="6">
+                    <router-link to="/about">
+                        <a-icon type="exclamation-circle"/>
+                        <span> 关于 </span>
+                    </router-link>
                 </a-menu-item>
             </a-menu>
         </a-layout-sider>
         <a-layout>
             <a-layout-header style="background: #fff; padding: 0">
-                <a-icon
-                        class="trigger"
-                        :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-                        @click="()=> collapsed = !collapsed"
-                />
+                <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+                        @click="()=> collapsed = !collapsed"/>
             </a-layout-header>
-            <a-layout-content
-                    :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }"
-            >
+            <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }">
                 <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
-                    <router-link to="/">Home</router-link>
-                    |
-                    <router-link to="/about">About</router-link>
-
                     <router-view/>
                 </div>
             </a-layout-content>
         </a-layout>
     </a-layout>
-
-
 </template>
 <script>
     export default {
