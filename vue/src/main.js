@@ -14,8 +14,15 @@ Vue.use(Antd);
 
 Vue.config.productionTip = false;
 
-var Mock = require('mockjs');
-Mock.mock("/testMock", "post", {data: "fdsafdsaf"});
+
+/**
+ 项目上线的时候删掉mock
+ */
+import { mockXHR } from '../mock'
+    mockXHR();
+if (process.env.NODE_ENV === 'production') {
+}
+
 
 new Vue({
     render: h => h(App),

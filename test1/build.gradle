@@ -1,0 +1,67 @@
+plugins {
+    id 'ear'
+    id 'java'
+    id 'war'
+}
+
+group 'ljj'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+
+dependencies {
+    // The following dependencies will be the ear modules and
+    // will be placed in the ear root
+    // deploy project(':war')
+
+    // The following dependencies will become ear libs and will
+    // be placed in a dir configured via the libDirName property
+    // earlib group: 'log4j', name: 'log4j'
+
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '5.1.10.RELEASE'
+    compile group: 'org.springframework', name: 'spring-tx', version: '5.1.10.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jdbc', version: '5.1.10.RELEASE'
+    compile group: 'org.springframework', name: 'spring-aspects', version: '5.1.10.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jms', version: '5.1.10.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context-support', version: '5.1.10.RELEASE'
+    compile group: 'org.springframework', name: 'spring-messaging', version: '5.1.10.RELEASE'
+
+    compile group: 'org.mybatis', name: 'mybatis-spring', version: '1.3.2'
+
+    compile group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'
+    compile group: 'c3p0', name: 'c3p0', version: '0.9.1.2'
+
+    compile group: 'commons-logging', name: 'commons-logging', version: '1.2'
+
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+
+    compile group: 'org.mybatis', name: 'mybatis', version: '3.4.6'
+    testCompile group: 'org.springframework', name: 'spring-test', version: '5.1.10.RELEASE'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+ear {
+    appDirName 'src/main/app'  // use application metadata found in this folder
+    // put dependent libraries into APP-INF/lib inside the generated EAR
+    libDirName 'APP-INF/lib'
+    deploymentDescriptor {  // custom entries for application.xml:
+//      fileName = "application.xml"  // same as the default value
+//      version = "6"  // same as the default value
+//      applicationName = "customear"
+        initializeInOrder = true
+//      displayName = "Custom Ear"  // defaults to project.name
+        // defaults to project.description if not set
+//      description = "My customized EAR for the Gradle documentation"
+//      libraryDirectory = "APP-INF/lib"  // not needed, above libDirName setting does this
+//      module("my.jar", "java")  // won't deploy as my.jar isn't deploy dependency
+//      webModule("my.war", "/")  // won't deploy as my.war isn't deploy dependency
+//      securityRole "admin"
+//      securityRole "superadmin"
+    }
+}

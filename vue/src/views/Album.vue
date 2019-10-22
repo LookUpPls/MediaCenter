@@ -25,13 +25,13 @@
                 <littleImg src="img/car.jpg" name="test"></littleImg>
             </div>
         </div>
-        <!--        <a-button @click="testMock">{{testMockVal}}</a-button>-->
+        <a-button @click="testMock1">{{testMockVal}}</a-button>
     </div>
 </template>
 
 <script>
     var axios = require('axios');
-
+    import {testMock} from '../api/testMock'
 
     import folder1 from '@/components/folder1.vue'
     import littleImg from '@/components/littleImg.vue'
@@ -48,20 +48,25 @@
             littleImg
         },
         methods: {
-            testMock: function () {
+            testMock1: function () {
                 this.testMockVal = "clicked";
                 // eslint-disable-next-line no-console
                 console.log("clicked");
-                axios.post('/testMock', {
-                    firstName: 'Fred',
-                    lastName: 'Flintstone'
+                // axios.post('/testMock', {
+                //     firstName: 'Fred',
+                //     lastName: 'Flintstone'
+                // })
+                //     .then(function (response) {
+                //         // eslint-disable-next-line no-console
+                //         console.log(JSON.stringify(response));
+                //     })
+                testMock().then(response => {
+                    console.log(JSON.stringify(response.data));
+
+                }).catch(err => {
+                    console.log(err)
+                    reject(false)
                 })
-                    .then(function (response) {
-                        // eslint-disable-next-line no-console
-                        console.log(JSON.stringify(response));
-                    })
-                // .catch(function (error) {
-                // });
             }
         }
     }
