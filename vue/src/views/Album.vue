@@ -1,28 +1,16 @@
 <template>
     <div class="home">
         <div>
-
             <p class="title">文件夹<span>共4个</span></p>
             <div class="folders">
-
-                <folder1 src="img/girl.jpeg" name="test"></folder1>
-                <folder1 src="img/blackBorder.jpg" name="test"></folder1>
-                <folder1 src="img/girlInBed.jpg" name="test"></folder1>
-                <folder1 src="img/car.jpg" name="test"></folder1>
-                <folder1 src="img/girl.jpeg" name="test"></folder1>
-                <folder1 src="img/girl.jpeg" name="test"></folder1>
-                <folder1 src="img/girl.jpeg" name="test"></folder1>
-                <folder1 src="img/girl.jpeg" name="test"></folder1>
+                <folder1 :name="folder.name" :src="folder.src" v-for="folder in folderData"></folder1>
             </div>
         </div>
         <div>
-
             <p class="title">图片<span>共21个</span></p>
             <div class="folders" style="margin: 10px;">
-
-                <littleImg src="img/blackBorder.jpg" name="test"></littleImg>
-                <littleImg src="img/girlInBed.jpg" name="test"></littleImg>
-                <littleImg src="img/car.jpg" name="test"></littleImg>
+                <littleImg :expect_height="172" :src="folder.src" name="folder.name"
+                           v-for="folder in folderData"></littleImg>
             </div>
         </div>
         <a-button @click="testMock1">{{testMockVal}}</a-button>
@@ -32,6 +20,7 @@
 <script>
     var axios = require('axios');
     import {testMock} from '../api/testMock'
+    import {getDir} from '../api/album'
 
     import folder1 from '@/components/folder1.vue'
     import littleImg from '@/components/littleImg.vue'
@@ -40,26 +29,28 @@
         name: 'home',
         data: function () {
             return {
-                testMockVal: "test"
+                testMockVal: "test",
+                folderData: {},
+                picData: {},
             }
         },
         components: {
             folder1,
             littleImg
         },
+        created() {
+            getDir().then(response => {
+                this.$data.folderData = response.data.folderData;
+                this.$data.picData = response.data.picData;
+            }).catch(err => {
+                console.log(err);
+                // reject(false);
+            })
+        },
         methods: {
             testMock1: function () {
                 this.testMockVal = "clicked";
-                // eslint-disable-next-line no-console
                 console.log("clicked");
-                // axios.post('/testMock', {
-                //     firstName: 'Fred',
-                //     lastName: 'Flintstone'
-                // })
-                //     .then(function (response) {
-                //         // eslint-disable-next-line no-console
-                //         console.log(JSON.stringify(response));
-                //     })
                 testMock().then(response => {
                     console.log(JSON.stringify(response.data));
 

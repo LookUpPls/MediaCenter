@@ -4,13 +4,10 @@
 
         <div class="title-out2">
             <div class="title-out1">
-                <p>&nbsp;风景&nbsp;</p>
+                <p>&nbsp;{{name}}&nbsp;</p>
             </div>
         </div>
 
-        <div hidden="hidden" class="title-content">
-            <p class="title">{{name}}</p>
-        </div>
         <div style="width: 195px;height:30px;">
 
             <p style="text-align: left; position:relative;top:8px; left: 5px;">

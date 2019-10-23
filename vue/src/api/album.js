@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function getDir(data) {
   return request({
-    url: '/user/login',
+    url: '/getdir',
     method: 'post',
     data
   })

@@ -20,7 +20,7 @@
             }
         },
 
-        created: function () {
+        created: function () {//生成自适应大小字体
             var c = document.createElement("canvas");
             c.width = 280;
             c.height = 200;
