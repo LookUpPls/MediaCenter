@@ -8,7 +8,7 @@
         </div>
         <div>
             <p class="title">图片<span>共21个</span></p>
-            <div class="folders" style="margin: 10px;">
+            <div class="imgs" >
                 <littleImg :expect_height="172" :src="folder.src" name="folder.name"
                            v-for="folder in folderData"></littleImg>
             </div>
@@ -72,6 +72,13 @@
 
         margin-bottom: 30px;
 
+    }
+
+    .imgs{
+        margin: 10px;
+    }
+    .imgs>img{
+        float: left;
     }
 
     .folders > div {
