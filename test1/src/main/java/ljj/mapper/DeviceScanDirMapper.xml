@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ljj.mapper.DeviceScanDirMapper" >
+  <resultMap id="BaseResultMap" type="ljj.pojo.DeviceScanDir" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="URI" property="uri" jdbcType="VARCHAR" />
+    <result column="deviceID" property="deviceid" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="ignore" property="ignore" jdbcType="BIT" />
+    <result column="discoveryTime" property="discoverytime" jdbcType="TIMESTAMP" />
+    <result column="lastModifiedTime" property="lastmodifiedtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, URI, deviceID, name, ignore, discoveryTime, lastModifiedTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="ljj.pojo.DeviceScanDirExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from device_scan_dir
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from device_scan_dir
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from device_scan_dir
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="ljj.pojo.DeviceScanDirExample" >
+    delete from device_scan_dir
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="ljj.pojo.DeviceScanDir" >
+    insert into device_scan_dir (id, URI, deviceID, 
+      name, ignore, discoveryTime, 
+      lastModifiedTime)
+    values (#{id,jdbcType=INTEGER}, #{uri,jdbcType=VARCHAR}, #{deviceid,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{ignore,jdbcType=BIT}, #{discoverytime,jdbcType=TIMESTAMP}, 
+      #{lastmodifiedtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="ljj.pojo.DeviceScanDir" >
+    insert into device_scan_dir
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="uri != null" >
+        URI,
+      </if>
+      <if test="deviceid != null" >
+        deviceID,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="ignore != null" >
+        ignore,
+      </if>
+      <if test="discoverytime != null" >
+        discoveryTime,
+      </if>
+      <if test="lastmodifiedtime != null" >
+        lastModifiedTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="uri != null" >
+        #{uri,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceid != null" >
+        #{deviceid,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="ignore != null" >
+        #{ignore,jdbcType=BIT},
+      </if>
+      <if test="discoverytime != null" >
+        #{discoverytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastmodifiedtime != null" >
+        #{lastmodifiedtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="ljj.pojo.DeviceScanDirExample" resultType="java.lang.Integer" >
+    select count(*) from device_scan_dir
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update device_scan_dir
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.uri != null" >
+        URI = #{record.uri,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceid != null" >
+        deviceID = #{record.deviceid,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ignore != null" >
+        ignore = #{record.ignore,jdbcType=BIT},
+      </if>
+      <if test="record.discoverytime != null" >
+        discoveryTime = #{record.discoverytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastmodifiedtime != null" >
+        lastModifiedTime = #{record.lastmodifiedtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update device_scan_dir
+    set id = #{record.id,jdbcType=INTEGER},
+      URI = #{record.uri,jdbcType=VARCHAR},
+      deviceID = #{record.deviceid,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      ignore = #{record.ignore,jdbcType=BIT},
+      discoveryTime = #{record.discoverytime,jdbcType=TIMESTAMP},
+      lastModifiedTime = #{record.lastmodifiedtime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="ljj.pojo.DeviceScanDir" >
+    update device_scan_dir
+    <set >
+      <if test="uri != null" >
+        URI = #{uri,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceid != null" >
+        deviceID = #{deviceid,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="ignore != null" >
+        ignore = #{ignore,jdbcType=BIT},
+      </if>
+      <if test="discoverytime != null" >
+        discoveryTime = #{discoverytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastmodifiedtime != null" >
+        lastModifiedTime = #{lastmodifiedtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ljj.pojo.DeviceScanDir" >
+    update device_scan_dir
+    set URI = #{uri,jdbcType=VARCHAR},
+      deviceID = #{deviceid,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      ignore = #{ignore,jdbcType=BIT},
+      discoveryTime = #{discoverytime,jdbcType=TIMESTAMP},
+      lastModifiedTime = #{lastmodifiedtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

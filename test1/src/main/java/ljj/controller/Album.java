@@ -1,15 +1,18 @@
 package ljj.controller;
 
-import ljj.pojo.DeviceScanDir;
+import ljj.util.scan;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Arrays;
+
 @Controller
-public class test {
-    @RequestMapping("/test")
+public class Album {
+    @RequestMapping("/scan")
     @ResponseBody
-    public DeviceScanDir test1(){
-        return new DeviceScanDir();
+    public String scan(){
+        scan utilScan = new scan();
+        return Arrays.toString(utilScan.scanLocalDir().toArray());
     }
 }

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ljj.mapper.PicturesMapper" >
+  <resultMap id="BaseResultMap" type="ljj.pojo.Pictures" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="spaceSize" property="spacesize" jdbcType="VARCHAR" />
+    <result column="fromDirID" property="fromdirid" jdbcType="INTEGER" />
+    <result column="savedDirID" property="saveddirid" jdbcType="INTEGER" />
+    <result column="uploadTime" property="uploadtime" jdbcType="TIMESTAMP" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, name, type, spaceSize, fromDirID, savedDirID, uploadTime, createTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="ljj.pojo.PicturesExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pictures
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from pictures
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pictures
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="ljj.pojo.PicturesExample" >
+    delete from pictures
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="ljj.pojo.Pictures" >
+    insert into pictures (id, name, type, 
+      spaceSize, fromDirID, savedDirID, 
+      uploadTime, createTime)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{spacesize,jdbcType=VARCHAR}, #{fromdirid,jdbcType=INTEGER}, #{saveddirid,jdbcType=INTEGER}, 
+      #{uploadtime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="ljj.pojo.Pictures" >
+    insert into pictures
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="spacesize != null" >
+        spaceSize,
+      </if>
+      <if test="fromdirid != null" >
+        fromDirID,
+      </if>
+      <if test="saveddirid != null" >
+        savedDirID,
+      </if>
+      <if test="uploadtime != null" >
+        uploadTime,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="spacesize != null" >
+        #{spacesize,jdbcType=VARCHAR},
+      </if>
+      <if test="fromdirid != null" >
+        #{fromdirid,jdbcType=INTEGER},
+      </if>
+      <if test="saveddirid != null" >
+        #{saveddirid,jdbcType=INTEGER},
+      </if>
+      <if test="uploadtime != null" >
+        #{uploadtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="ljj.pojo.PicturesExample" resultType="java.lang.Integer" >
+    select count(*) from pictures
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pictures
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spacesize != null" >
+        spaceSize = #{record.spacesize,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fromdirid != null" >
+        fromDirID = #{record.fromdirid,jdbcType=INTEGER},
+      </if>
+      <if test="record.saveddirid != null" >
+        savedDirID = #{record.saveddirid,jdbcType=INTEGER},
+      </if>
+      <if test="record.uploadtime != null" >
+        uploadTime = #{record.uploadtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createtime != null" >
+        createTime = #{record.createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pictures
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      spaceSize = #{record.spacesize,jdbcType=VARCHAR},
+      fromDirID = #{record.fromdirid,jdbcType=INTEGER},
+      savedDirID = #{record.saveddirid,jdbcType=INTEGER},
+      uploadTime = #{record.uploadtime,jdbcType=TIMESTAMP},
+      createTime = #{record.createtime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="ljj.pojo.Pictures" >
+    update pictures
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="spacesize != null" >
+        spaceSize = #{spacesize,jdbcType=VARCHAR},
+      </if>
+      <if test="fromdirid != null" >
+        fromDirID = #{fromdirid,jdbcType=INTEGER},
+      </if>
+      <if test="saveddirid != null" >
+        savedDirID = #{saveddirid,jdbcType=INTEGER},
+      </if>
+      <if test="uploadtime != null" >
+        uploadTime = #{uploadtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ljj.pojo.Pictures" >
+    update pictures
+    set name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      spaceSize = #{spacesize,jdbcType=VARCHAR},
+      fromDirID = #{fromdirid,jdbcType=INTEGER},
+      savedDirID = #{saveddirid,jdbcType=INTEGER},
+      uploadTime = #{uploadtime,jdbcType=TIMESTAMP},
+      createTime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

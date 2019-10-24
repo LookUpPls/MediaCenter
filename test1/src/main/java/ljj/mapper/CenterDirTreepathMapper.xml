@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ljj.mapper.CenterDirTreepathMapper" >
+  <resultMap id="BaseResultMap" type="ljj.pojo.CenterDirTreepath" >
+    <id column="ancestor" property="ancestor" jdbcType="INTEGER" />
+    <id column="descendant" property="descendant" jdbcType="INTEGER" />
+    <result column="deepth" property="deepth" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ancestor, descendant, deepth
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="ljj.pojo.CenterDirTreepathExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from center_dir_treepath
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="ljj.pojo.CenterDirTreepathKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from center_dir_treepath
+    where ancestor = #{ancestor,jdbcType=INTEGER}
+      and descendant = #{descendant,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="ljj.pojo.CenterDirTreepathKey" >
+    delete from center_dir_treepath
+    where ancestor = #{ancestor,jdbcType=INTEGER}
+      and descendant = #{descendant,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="ljj.pojo.CenterDirTreepathExample" >
+    delete from center_dir_treepath
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="ljj.pojo.CenterDirTreepath" >
+    insert into center_dir_treepath (ancestor, descendant, deepth
+      )
+    values (#{ancestor,jdbcType=INTEGER}, #{descendant,jdbcType=INTEGER}, #{deepth,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ljj.pojo.CenterDirTreepath" >
+    insert into center_dir_treepath
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ancestor != null" >
+        ancestor,
+      </if>
+      <if test="descendant != null" >
+        descendant,
+      </if>
+      <if test="deepth != null" >
+        deepth,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ancestor != null" >
+        #{ancestor,jdbcType=INTEGER},
+      </if>
+      <if test="descendant != null" >
+        #{descendant,jdbcType=INTEGER},
+      </if>
+      <if test="deepth != null" >
+        #{deepth,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="ljj.pojo.CenterDirTreepathExample" resultType="java.lang.Integer" >
+    select count(*) from center_dir_treepath
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update center_dir_treepath
+    <set >
+      <if test="record.ancestor != null" >
+        ancestor = #{record.ancestor,jdbcType=INTEGER},
+      </if>
+      <if test="record.descendant != null" >
+        descendant = #{record.descendant,jdbcType=INTEGER},
+      </if>
+      <if test="record.deepth != null" >
+        deepth = #{record.deepth,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update center_dir_treepath
+    set ancestor = #{record.ancestor,jdbcType=INTEGER},
+      descendant = #{record.descendant,jdbcType=INTEGER},
+      deepth = #{record.deepth,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="ljj.pojo.CenterDirTreepath" >
+    update center_dir_treepath
+    <set >
+      <if test="deepth != null" >
+        deepth = #{deepth,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ancestor = #{ancestor,jdbcType=INTEGER}
+      and descendant = #{descendant,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ljj.pojo.CenterDirTreepath" >
+    update center_dir_treepath
+    set deepth = #{deepth,jdbcType=INTEGER}
+    where ancestor = #{ancestor,jdbcType=INTEGER}
+      and descendant = #{descendant,jdbcType=INTEGER}
+  </update>
+</mapper>
