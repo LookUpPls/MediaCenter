@@ -14,8 +14,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
-public class scan {
+public class scan3 {
     private final Lock watchLock = new ReentrantLock();
+    Stack<File> stk = new Stack<File>();
 
     @Resource(name = "pool")
     private ThreadPoolExecutor pool = new ThreadPoolExecutor(30, 6000, 5, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(), new ThreadPoolExecutor.DiscardPolicy());
@@ -36,14 +37,16 @@ public class scan {
         File[] roots = File.listRoots();
         try {
             lockAll.writeLock().lock();
-            for (File root : roots)
-                for(File root1:root.listFiles())
-                pool.submit(new FindDirRunable(root));
+            stk.addAll(Arrays.asList(roots));
             allTasks += roots.length;
         } finally {
             lockAll.writeLock().unlock();
         }
         long timestart = System.currentTimeMillis();
+
+        pool.submit(new FindDirRunable());
+        pool.submit(new FindDirRunable());
+
         while (complatedTasks < 7000) {
             //死循环监视是否结束，目前还有问题
             System.out.print("allTasks = " + allTasks);
@@ -56,7 +59,6 @@ public class scan {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
         ThreadPool.pool.shutdownNow();
         System.out.println("end");
@@ -70,17 +72,10 @@ public class scan {
     }
 
     private class FindDirRunable implements Runnable {
-        Stack<File> stk = new Stack<File>();
-
-
-        FindDirRunable(File dir) {
-            stk.push(dir);
-        }
 
         @Override
         public void run() {
             File dir;
-
             while (!stk.empty()) {//当栈不为空，就一直循环压栈出栈过程。
                 try {
                     dir = stk.pop();//弹出栈顶元素            try {
@@ -103,6 +98,7 @@ public class scan {
                             }
                         }
                     }
+
                 } finally {
                     //同步加 完成的任务数
                     try {
@@ -116,4 +112,6 @@ public class scan {
             }
         }
     }
+
+    ;
 }

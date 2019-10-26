@@ -40,7 +40,7 @@ http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
     <!-- 将事务通知织入到目标对象us中 -->
     <aop:config>
         <!-- 配置切入点 -->
-        <aop:pointcut expression="execution(* ljj.service..*ServiceImpl.*(..))" id="pc"/>
+        <aop:pointcut expression="execution(* ljj.service..*impl.*(..))" id="pc"/>
 
         <!-- 配置切面 -->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="pc"/>

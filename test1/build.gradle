@@ -2,6 +2,14 @@ plugins {
     id 'ear'
     id 'java'
     id 'war'
+    id 'idea'
+}
+
+idea {
+    module {
+//        downloadJavadoc = true
+        downloadSources = true
+    }
 }
 
 group 'ljj'
