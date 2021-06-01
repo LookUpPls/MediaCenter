@@ -8,9 +8,8 @@
         </div>
         <div>
             <p class="title">图片<span>共21个</span></p>
-            <div class="imgs" >
-                <littleImg :expect_height="172" :src="folder.src" name="folder.name"
-                           v-for="folder in folderData"></littleImg>
+            <div class="imgs" v-bind:style="{ display: 'grid', 'grid-template-rows': 'repeat(auto-fill,16px)', 'grid-template-columns': 'repeat(auto-fill,16px)',}">
+                <littleImg @command="onCommand" :blockSize="blockSize"  :gridSize="gridSize" :src="folder.src" name="folder.name" v-for="folder in folderData"></littleImg>
             </div>
         </div>
         <a-button @click="testMock1">{{testMockVal}}</a-button>
@@ -29,14 +28,28 @@
         name: 'home',
         data: function () {
             return {
+                gridSize: 28,
                 testMockVal: "test",
                 folderData: {},
                 picData: {},
+                gridStyle: {}
             }
         },
         components: {
             folder1,
             littleImg
+        },
+        computed: {
+            blockSize: function () {
+                let size = 312;
+                let yv=size%this.gridSize;
+                if(yv>this.gridSize/2)
+                    size+=yv;
+                else
+                    size-=yv;
+                console.log(size)
+                return size
+            }
         },
         created() {
             getDir().then(response => {
@@ -48,6 +61,12 @@
             })
         },
         methods: {
+            onCommand:function(info){
+                switch (info.order) {
+                    case "closeVideo":
+                        break;
+                }
+            },
             testMock1: function () {
                 this.testMockVal = "clicked";
                 console.log("clicked");
@@ -74,11 +93,14 @@
 
     }
 
-    .imgs{
+    .imgs {
         margin: 10px;
+        grid-auto-flow: row dense;
+        background-color: aliceblue;
     }
-    .imgs>img{
-        float: left;
+
+    .imgs > img {
+        /*float: left;*/
     }
 
     .folders > div {

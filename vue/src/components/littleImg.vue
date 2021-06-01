@@ -1,5 +1,7 @@
 <template>
-    <img :height="height" :src="src" :width="width" alt="" class="img" ref="images">
+    <div :style="style" >
+        <img :src="src" alt="" class="img" ref="image">
+    </div>
 </template>
 
 <script>
@@ -8,29 +10,43 @@
         props: {
             name: String,
             src: String,
-            expect_height: Number
+            gridSize: [Number, String],
+            blockSize: [Number, String]
         },
         data: function () {
             return {
-                width: 'auto',
-                height: '172px'
+                style: {
+                    gridRow: "span 1",
+                    gridColumn: "span 1",
+                }
             }
         },
         mounted() {
-            this.getImgNaturalDimensions(this.$refs.images, this, function (othis, dimension) {
-                console.log(othis.src);
-                var scale = dimension.h / dimension.w;
+            this.getImgNaturalDimensions(this.$refs.image, this, function (othis, dimension) {
+                // console.log(othis);
+                // console.log(othis.src);
+                // console.log(dimension);
+                if (dimension.h >= dimension.w) {
+                    othis.style.gridColumn = "span " + parseInt(othis.blockSize / othis.gridSize);
+                    othis.style.gridRow = "span " + parseInt(othis.blockSize * dimension.h / dimension.w / othis.gridSize);
+                } else {
+                    othis.style.gridRow = "span " + parseInt(othis.blockSize / othis.gridSize);
+                    othis.style.gridColumn = "span " + parseInt(othis.blockSize * dimension.w / dimension.h / othis.gridSize);
+                }
+                var scale = dimension.w / dimension.h;
                 console.log(scale);
-                if (scale > 1.5)
-                    othis.height = othis.expect_height * 2 + "px";
-                else
-                    othis.height = othis.expect_height + "px";
+                //
+                // if (scale > 1.5)
+                //     othis.height = othis.gridSize * 2 + "px";
+                // else
+                //     othis.height = othis.gridSize + "px";
             })
         },
         methods: {
             getImgNaturalDimensions: function (oImg, othis, callback) {
+                // console.log(oImg)
                 var nWidth, nHeight;
-                if (!oImg.naturalWidth) { // 现代浏览器
+                if (oImg.naturalWidth) { // 现代浏览器
 
                     nWidth = oImg.naturalWidth;
                     nHeight = oImg.naturalHeight;
@@ -53,9 +69,10 @@
 
 <style scoped>
     .img {
-
-        object-fit: cover;
-        border: 1px solid #666666;
+        width: 100%;
+        height: 100%;
+        /*object-fit: cover;*/
+        /*border: 1px solid #666666;*/
     }
 
 </style>
