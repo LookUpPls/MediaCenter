@@ -11,7 +11,8 @@ export default {
     name: String,
     src: String,
     gridSize: [Number, String],
-    blockSize: [Number, String]
+    blockWidth: [Number, String],
+    blockHeight: [Number, String]
   },
   data: function () {
     return {
@@ -21,26 +22,27 @@ export default {
       }
     }
   },
+  computed: {
+    standRate: function () {
+      return this.blockWidth / this.blockHeight;
+    }
+  },
   mounted() {
     this.getImgNaturalDimensions(this.$refs.image, this,
         function (othis, dimension) {
-          // console.log(othis);
-          // console.log(othis.src);
-          // console.log(dimension);
-          if (dimension.h >= dimension.w) {
-            othis.style.gridColumn = "span " + parseInt(othis.blockSize / othis.gridSize);
-            othis.style.gridRow = "span " + parseInt(othis.blockSize * dimension.h / dimension.w / othis.gridSize);
+          if (dimension.w / dimension.h < othis.standRate) {
+            // 高
+            let h = othis.blockWidth / dimension.w * dimension.h;
+            h = Math.round(h / othis.blockHeight) * othis.blockHeight;
+            othis.style.gridColumn = "span " + parseInt(othis.blockWidth / othis.gridSize);
+            othis.style.gridRow = "span " + parseInt(h / othis.gridSize);
           } else {
-            othis.style.gridRow = "span " + parseInt(othis.blockSize / othis.gridSize);
-            othis.style.gridColumn = "span " + parseInt(othis.blockSize * dimension.w / dimension.h / othis.gridSize);
+            // 宽
+            let w = othis.blockHeight / dimension.h * dimension.w;
+            w = Math.round(w / othis.blockWidth) * othis.blockWidth;
+            othis.style.gridColumn = "span " + parseInt(w / othis.gridSize);
+            othis.style.gridRow = "span " + parseInt(othis.blockHeight / othis.gridSize);
           }
-          var scale = dimension.w / dimension.h;
-          console.log(scale);
-          //
-          // if (scale > 1.5)
-          //     othis.height = othis.gridSize * 2 + "px";
-          // else
-          //     othis.height = othis.gridSize + "px";
         })
   },
   methods: {

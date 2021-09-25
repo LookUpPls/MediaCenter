@@ -10,7 +10,8 @@
       <p class="title">图片<span>共21个</span></p>
       <div class="imgs"
            v-bind:style="{ display: 'grid', 'grid-template-rows': 'repeat(auto-fill,16px)', 'grid-template-columns': 'repeat(auto-fill,16px)',}">
-        <littleImg @command="onCommand" :blockSize="blockSize" :gridSize="gridSize" :src="folder.src" name="folder.name"
+        <littleImg @command="onCommand" :blockHeight="blockHeight" :blockWidth="blockWidth" :gridSize="gridSize"
+                   :src="folder.src" name="folder.name"
                    v-for="folder in folderData"></littleImg>
       </div>
     </div>
@@ -42,15 +43,21 @@ export default {
     littleImg
   },
   computed: {
-    blockSize: function () {
+    blockWidth: function () {
       let size = 312;
-      let yv = size % this.gridSize;
-      if (yv > this.gridSize / 2)
-        size = size + this.gridSize - yv;
-      else
-        size -= yv;
-      console.log(size)
+      let remainder = size % this.gridSize;
+      let widthGridCount = parseInt(size / this.gridSize);
+      if (remainder > this.gridSize / 2) {
+        size = size + this.gridSize - remainder;
+        widthGridCount++;
+      } else {
+        size -= remainder;
+        widthGridCount--;
+      }
       return size
+    },
+    blockHeight: function () {
+      return this.gridSize * Math.round(this.blockWidth / this.gridSize * 0.9);
     }
   },
   created() {
