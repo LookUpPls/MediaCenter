@@ -1,6 +1,8 @@
 <template>
   <div :style="style">
-    <img :src="src" alt="" class="img" ref="image">
+    <img :src="src" alt="" @mouseenter="mouseEnter" @mouseleave="mouseLeave"
+         :style="{width:width,height:height,objectFit: objectFit }"
+         class="img" ref="image">
   </div>
 </template>
 
@@ -16,9 +18,17 @@ export default {
   },
   data: function () {
     return {
+      oW: 0,
+      oH: 0,
+      computedW: 0,
+      computedH: 0,
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
       style: {
         gridRow: "span 1",
         gridColumn: "span 1",
+        overflow: "hidden",
       }
     }
   },
@@ -29,31 +39,45 @@ export default {
   },
   mounted() {
     this.getImgNaturalDimensions(this.$refs.image, this,
-        function (othis, dimension) {
-          if (dimension.w / dimension.h < othis.standRate) {
+        function (that, origin) {
+          that.oW = origin.w;
+          that.oH = origin.h;
+          if (origin.w / origin.h < that.standRate) {
             // 高
-            let h = othis.blockWidth / dimension.w * dimension.h;
-            h = Math.round(h / othis.blockHeight) * othis.blockHeight;
-            othis.style.gridColumn = "span " + parseInt(othis.blockWidth / othis.gridSize);
-            othis.style.gridRow = "span " + parseInt(h / othis.gridSize);
+            // 固定宽度,计算出高度
+            let h = that.blockWidth / origin.w * origin.h;
+            // 把高度近似成倍数于单位块的.
+            h = Math.round(h / that.blockHeight) * that.blockHeight;
+            that.style.gridColumn = "span " + parseInt(that.blockWidth / that.gridSize);
+            that.style.gridRow = "span " + parseInt(h / that.gridSize);
+            that.computedW = that.blockWidth;
+            that.computedH = h;
           } else {
             // 宽
-            let w = othis.blockHeight / dimension.h * dimension.w;
-            w = Math.round(w / othis.blockWidth) * othis.blockWidth;
-            othis.style.gridColumn = "span " + parseInt(w / othis.gridSize);
-            othis.style.gridRow = "span " + parseInt(othis.blockHeight / othis.gridSize);
+            let w = that.blockHeight / origin.h * origin.w;
+            w = Math.round(w / that.blockWidth) * that.blockWidth;
+            that.style.gridColumn = "span " + parseInt(w / that.gridSize);
+            that.style.gridRow = "span " + parseInt(that.blockHeight / that.gridSize);
+            that.computedW = w;
+            that.computedH = that.blockHeight;
           }
         })
   },
   methods: {
-    getImgNaturalDimensions: function (oImg, othis, callback) {
+    mouseEnter: function () {
+      this.objectFit = 'contain';
+    },
+    mouseLeave: function () {
+      this.objectFit = 'cover';
+    },
+    getImgNaturalDimensions: function (oImg, that, callback) {
       // console.log(oImg)
       var nWidth, nHeight;
       if (oImg.naturalWidth) { // 现代浏览器
 
         nWidth = oImg.naturalWidth;
         nHeight = oImg.naturalHeight;
-        callback(othis, {w: nWidth, h: nHeight});
+        callback(that, {w: nWidth, h: nHeight});
 
       } else { // IE6/7/8
         var nImg = new Image();
@@ -61,7 +85,7 @@ export default {
         nImg.onload = function () {
           var nWidth = nImg.width,
               nHeight = nImg.height;
-          callback(othis, {w: nWidth, h: nHeight});
+          callback(that, {w: nWidth, h: nHeight});
         };
         nImg.src = oImg.src;
       }
@@ -72,8 +96,8 @@ export default {
 
 <style scoped>
 .img {
-  width: 100%;
-  height: 100%;
+  /*width: 100%;*/
+  /*height: 100%;*/
   /*object-fit: cover;*/
   /*border: 1px solid #666666;*/
 }

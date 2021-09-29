@@ -105,11 +105,14 @@ export default {
 .imgs {
   margin: 10px;
   grid-auto-flow: row dense;
-  background-color: aliceblue;
+  background-color: black;
+  grid-gap: 3px;
+  /*overflow: hidden;*/
 }
 
 .imgs > img {
   /*float: left;*/
+  /*object-fit: cover;*/
 }
 
 .folders > div {
