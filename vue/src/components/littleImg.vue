@@ -14,7 +14,8 @@ export default {
     src: String,
     gridSize: [Number, String],
     blockWidth: [Number, String],
-    blockHeight: [Number, String]
+    blockHeight: [Number, String],
+    allRates: Map
   },
   data: function () {
     return {
@@ -42,24 +43,38 @@ export default {
         function (that, origin) {
           that.oW = origin.w;
           that.oH = origin.h;
-          if (origin.w / origin.h < that.standRate) {
+          let realRate = origin.w / origin.h;
+          let minDiff = Number.MAX_VALUE;
+          let nowRateO;
+          for (let allRatesKey in that.allRates) {
+            let rateO = that.allRates[allRatesKey];
+            let diff = Math.abs(realRate - rateO.rate);
+            if (diff < minDiff) {
+              nowRateO = rateO;
+              minDiff = diff;
+            }
+          }
+          console.log(nowRateO)
+          let standHeight = that.blockHeight * nowRateO.y;
+          let standWidth = that.blockWidth * nowRateO.x;
+          if (realRate < nowRateO.rate) {
             // 高
             // 固定宽度,计算出高度
-            let h = that.blockWidth / origin.w * origin.h;
+            let h = standWidth / origin.w * origin.h;
             // 把高度近似成倍数于单位块的.
-            h = Math.round(h / that.blockHeight) * that.blockHeight;
-            that.style.gridColumn = "span " + parseInt(that.blockWidth / that.gridSize);
+            h = Math.round(h / standHeight) * standHeight;
+            that.style.gridColumn = "span " + parseInt(standWidth / that.gridSize);
             that.style.gridRow = "span " + parseInt(h / that.gridSize);
-            that.computedW = that.blockWidth;
+            that.computedW = standWidth;
             that.computedH = h;
           } else {
             // 宽
-            let w = that.blockHeight / origin.h * origin.w;
-            w = Math.round(w / that.blockWidth) * that.blockWidth;
+            let w = standHeight / origin.h * origin.w;
+            w = Math.round(w / standWidth) * standWidth;
             that.style.gridColumn = "span " + parseInt(w / that.gridSize);
-            that.style.gridRow = "span " + parseInt(that.blockHeight / that.gridSize);
+            that.style.gridRow = "span " + parseInt(standHeight / that.gridSize);
             that.computedW = w;
-            that.computedH = that.blockHeight;
+            that.computedH = standHeight;
           }
         })
   },

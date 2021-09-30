@@ -10,7 +10,8 @@
       <p class="title">图片<span>共21个</span></p>
       <div class="imgs"
            v-bind:style="{ display: 'grid', 'grid-template-rows': 'repeat(auto-fill,16px)', 'grid-template-columns': 'repeat(auto-fill,16px)',}">
-        <littleImg @command="onCommand" :blockHeight="blockHeight" :blockWidth="blockWidth" :gridSize="gridSize"
+        <littleImg @command="onCommand" :blockHeight="blockHeight" :blockWidth="blockWidth" :allRates=allRates
+                   :gridSize="gridSize"
                    :src="folder.src" name="folder.name"
                    v-for="folder in folderData"></littleImg>
       </div>
@@ -58,8 +59,23 @@ export default {
     },
     blockHeight: function () {
       return this.gridSize * Math.round(this.blockWidth / this.gridSize * 0.9);
+    },
+    allRates: function () {
+      let t = {};
+      // todo: 最宽能放下几个就用几个替换掉10
+      for (let i = 1; i <= 4; i++) {
+        for (let j = 1; j <= 4; j++) {
+          let rate = (i * this.blockWidth) / (j * this.blockHeight);
+          let k = 'n' + (rate).toFixed(3);
+          if (typeof t[k] !== "undefined" && t[k].x * t[k].y <= i * j)
+            continue;
+          t[k] = {rate: rate, x: i, y: j};
+        }
+      }
+      return t;
     }
-  },
+  }
+  ,
   created() {
     getDir().then(response => {
       this.$data.folderData = response.data.folderData;
@@ -68,14 +84,16 @@ export default {
       console.log(err);
       // reject(false);
     })
-  },
+  }
+  ,
   methods: {
     onCommand: function (info) {
       switch (info.order) {
         case "closeVideo":
           break;
       }
-    },
+    }
+    ,
     testMock1: function () {
       this.testMockVal = "clicked";
       console.log("clicked");
