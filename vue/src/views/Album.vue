@@ -8,12 +8,9 @@
     </div>
     <div>
       <p class="title">图片<span>共21个</span></p>
-      <div class="imgs"
-           v-bind:style="{ display: 'grid', 'grid-template-rows': 'repeat(auto-fill,16px)', 'grid-template-columns': 'repeat(auto-fill,16px)',}">
-        <littleImg @command="onCommand" :blockHeight="blockHeight" :blockWidth="blockWidth" :allRates=allRates
-                   :gridSize="gridSize"
-                   :src="folder.src" name="folder.name"
-                   v-for="folder in folderData"></littleImg>
+      <div class="imgs" ref="images">
+        <img :src="pic.src" :ref="pic.name" @load="loadOnePic(pic.name)" :height="pic.height" :id="pic.name"
+             v-for="pic in pictures"/>
       </div>
     </div>
     <a-button @click="testMock1">{{ testMockVal }}</a-button>
@@ -36,49 +33,62 @@ export default {
       testMockVal: "test",
       folderData: {},
       picData: {},
-      gridStyle: {}
+      pictures: {},
+      picturesIndex: {},
+      gridStyle: {},
+      loadedImageCount: 0,
+      minHeight: 300,
+      maxHeight: 500,
     }
   },
   components: {
     folder1,
     littleImg
   },
-  computed: {
-    blockWidth: function () {
-      let size = 312;
-      let remainder = size % this.gridSize;
-      let widthGridCount = parseInt(size / this.gridSize);
-      if (remainder > this.gridSize / 2) {
-        size = size + this.gridSize - remainder;
-        widthGridCount++;
-      } else {
-        size -= remainder;
-        widthGridCount--;
-      }
-      return size
-    },
-    blockHeight: function () {
-      return this.gridSize * Math.round(this.blockWidth / this.gridSize * 0.9);
-    },
-    allRates: function () {
-      let t = {};
-      // todo: 最宽能放下几个就用几个替换掉10
-      for (let i = 1; i <= 4; i++) {
-        for (let j = 1; j <= 4; j++) {
-          let rate = (i * this.blockWidth) / (j * this.blockHeight);
-          let k = 'n' + (rate).toFixed(3);
-          if (typeof t[k] !== "undefined" && t[k].x * t[k].y <= i * j)
-            continue;
-          t[k] = {rate: rate, x: i, y: j};
+  watch: {
+    loadedImageCount: function (now, old) {
+      if (this.allImageCount === now) {
+        // 计算位置
+        let row = [];
+        let width = this.$refs.images.clientWidth
+        let rateSum = 0;
+        for (let key in this.pictures) {
+          let pic = this.pictures[key];
+          rateSum += (pic.oWidth / pic.oHeight);
+          row.push(key);
+          let h = width / rateSum;
+          console.log(h);
+          if (h > this.minHeight && h < this.maxHeight) {
+            for (let i = 0; i < row.length; i++) {
+              let k = row[i];
+              this.pictures[k].height = Math.floor(h) + 'px';
+              this.$set(this.pictures, k, this.pictures[k]);
+            }
+            rateSum = 0;
+            row = [];
+          }
         }
+        console.log(this.pictures)
       }
-      return t;
     }
+  },
+  computed: {
+    allImageCount: function () {
+      return this.folderData.length;
+    },
   }
   ,
   created() {
     getDir().then(response => {
       this.$data.folderData = response.data.folderData;
+      this.pictures = response.data.folderData;
+      for (let key in this.pictures) {
+        this.pictures[key].height = '100px';
+        this.pictures[key].oHeight = null;
+        this.pictures[key].oWidth = null;
+        this.pictures[key].resolved = false;
+        this.picturesIndex[this.pictures[key].name] = this.pictures[key];
+      }
       this.$data.picData = response.data.picData;
     }).catch(err => {
       console.log(err);
@@ -87,23 +97,25 @@ export default {
   }
   ,
   methods: {
-    onCommand: function (info) {
-      switch (info.order) {
-        case "closeVideo":
-          break;
+    loadOnePic: function (name) {
+      this.loadedImageCount++;
+      let oImg = this.$refs[name];
+      let pic = this.picturesIndex[name];
+      if (oImg[0].naturalWidth) { // 现代浏览器
+        pic.oWidth = oImg[0].naturalWidth;
+        pic.oHeight = oImg[0].naturalHeight;
+      } else { // IE6/7/8
+        let nImg = new Image();
+        nImg.onload = function (e) {
+          pic.oWidth = e.target.width;
+          pic.oHeight = e.target.height;
+        };
+        nImg.src = oImg[0].src;
       }
-    }
-    ,
+    },
     testMock1: function () {
-      this.testMockVal = "clicked";
-      console.log("clicked");
-      testMock().then(response => {
-        console.log(JSON.stringify(response.data));
-
-      }).catch(err => {
-        console.log(err)
-        reject(false)
-      })
+      this.pictures[0].height = '500px'
+      this.$set(this.pictures, 0, this.pictures[0])
     }
   }
 }
