@@ -8,10 +8,13 @@
     </div>
     <div>
       <p class="title">图片<span>共21个</span></p>
+      <!--      <a-slider v-model="maxHeight" :min="1" :max="2000" @afterChange="locationImages"/>-->
+      <a-slider v-model="maxHeight" :min="1" :max="2000" @change="locationImages"/>
       <div class="imgs" ref="images">
         <img :src="pic.src" :ref="pic.name" @load="loadOnePic(pic.name)" :height="pic.height" :id="pic.name"
              v-for="pic in pictures"/>
       </div>
+      <a-slider v-model="maxHeight" :min="1" :max="2000" @change="locationImages"/>
     </div>
     <a-button @click="testMock1">{{ testMockVal }}</a-button>
   </div>
@@ -37,8 +40,7 @@ export default {
       picturesIndex: {},
       gridStyle: {},
       loadedImageCount: 0,
-      minHeight: 300,
-      maxHeight: 500,
+      maxHeight: 435,
     }
   },
   components: {
@@ -48,27 +50,7 @@ export default {
   watch: {
     loadedImageCount: function (now, old) {
       if (this.allImageCount === now) {
-        // 计算位置
-        let row = [];
-        let width = this.$refs.images.clientWidth
-        let rateSum = 0;
-        for (let key in this.pictures) {
-          let pic = this.pictures[key];
-          rateSum += (pic.oWidth / pic.oHeight);
-          row.push(key);
-          let h = width / rateSum;
-          console.log(h);
-          if (h > this.minHeight && h < this.maxHeight) {
-            for (let i = 0; i < row.length; i++) {
-              let k = row[i];
-              this.pictures[k].height = Math.floor(h) + 'px';
-              this.$set(this.pictures, k, this.pictures[k]);
-            }
-            rateSum = 0;
-            row = [];
-          }
-        }
-        console.log(this.pictures)
+        this.locationImages();
       }
     }
   },
@@ -97,6 +79,40 @@ export default {
   }
   ,
   methods: {
+    locationImages: function () {
+      // 计算位置
+      let row = [];
+      let width = this.$refs.images.clientWidth
+      let rateSum = 0;
+      let h;
+      for (let key in this.pictures) {
+        let pic = this.pictures[key];
+        rateSum += (pic.oWidth / pic.oHeight);
+        row.push(key);
+        h = width / rateSum;
+        console.log(h);
+        if (h < this.maxHeight) {
+          for (let i = 0; i < row.length; i++) {
+            let k = row[i];
+            this.pictures[k].height = (h) + 'px';
+            this.$set(this.pictures, k, this.pictures[k]);
+          }
+          rateSum = 0;
+          row = [];
+        }
+      }
+      // 最后有没凑够一整行的
+      if (row.length > 0) {
+        let realWidth = rateSum * this.maxHeight;
+        if (realWidth / width < 0.7)
+          h = this.maxHeight;
+        for (let i = 0; i < row.length; i++) {
+          let k = row[i];
+          this.pictures[k].height = h + 'px';
+          this.$set(this.pictures, k, this.pictures[k]);
+        }
+      }
+    },
     loadOnePic: function (name) {
       this.loadedImageCount++;
       let oImg = this.$refs[name];
