@@ -22,7 +22,6 @@
 
 <script>
 var axios = require('axios');
-import {testMock} from '../api/testMock'
 import {getDir} from '../api/album'
 
 import folder1 from '@/components/folder1.vue'
