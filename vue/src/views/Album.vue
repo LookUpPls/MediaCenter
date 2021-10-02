@@ -41,6 +41,7 @@ export default {
       loadedImageCount: 0,
       maxHeight: 435,
       rows: [],
+      exchanged: {},
     }
   },
   components: {
@@ -72,6 +73,7 @@ export default {
         this.pictures[key].index = parseInt(key);
         this.picturesIndex[this.pictures[key].name] = this.pictures[key];
       }
+      console.log('rquest completed')
       console.log(this.pictures);
       this.$data.picData = response.data.picData;
     }).catch(err => {
@@ -82,7 +84,6 @@ export default {
   ,
   methods: {
     computeRowHeight: function (rowIndex, h) {
-      console.log(rowIndex)
       let width = this.$refs.images.clientWidth
       let row = this.rows[rowIndex];
       if (!!!h) {
@@ -105,11 +106,12 @@ export default {
     },
     locationImages: function () {
       // 计算位置
+      console.log("----------------------------------------")
+      this.exchanged = {};
       let row = [];
       let width = this.$refs.images.clientWidth
       let aspectRatioSum = 0;
       let h;
-      let lastRow;
       for (let key in this.pictures) {
         let pic = this.pictures[key];
         if (!!!pic.aspectRatio)
@@ -117,7 +119,6 @@ export default {
         aspectRatioSum += pic.aspectRatio;
         row.push(key);
         h = width / aspectRatioSum;
-        console.log(h);
         if (h < this.maxHeight) {
           this.rows.push(row);
           this.computeRowHeight(this.rows.length - 1, h);
@@ -133,55 +134,62 @@ export default {
         this.rows.push(row);
         this.computeRowHeight(this.rows.length - 1, h);
       }
-      console.log(this.pictures)
-      console.log(this.rows)
       // todo: 像素替换计划, 把小像素但贼大的和大像素但贼小的交换一下位置,注意比例.
       // 从后边取
       let wooer;
-      for (let key in this.pictures) {
-        let pic = this.pictures[key];
-        if (pic.scaling > 2) {
-          console.log(pic)
-          console.log(pic.index)
-          console.log(pic.name)
-          wooer = pic;
-          // 环绕循环
-          let diff = 1;
-          let endLeft = true;
-          let endRight = true;
-          do {
-            endLeft = true;
-            endRight = true;
-            if (parseInt(key) - diff > 0) {
-              let pic1 = this.pictures[parseInt(key) - diff];
-              if (pic1.scaling < 0.5 && Math.abs(pic1.aspectRatio - pic.aspectRatio) < 1 && pic1.row !== pic.row) {
-                let il = pic.index;
-                let ir = pic1.index;
-                let temp = this.pictures[il];
-                this.pictures[il] = this.pictures[ir];
-                this.pictures[ir] = temp;
-                temp = this.pictures[il].index;
-                this.pictures[il].index = this.pictures[ir].index;
-                this.pictures[ir].index = temp;
-                // temp = this.pictures[pic.index].row;
-                // this.pictures[pic.index].row = this.pictures[pic1.index].row;
-                // this.pictures[pic1.index].row = temp;
-                this.computeRowHeight(this.pictures[il].row);
-                this.computeRowHeight(this.pictures[ir].row);
-                console.log(this.pictures);
-                break;
+      // 是否处理过
+      let progressed;
+      do {
+        progressed = false;
+        for (let key in this.pictures) {
+          let pic = this.pictures[key];
+          if (pic.scaling > 2) {
+            wooer = pic;
+            // 环绕循环
+            let diff = 1;
+            let endLeft;
+            let endRight;
+            let left = true;
+            do {
+              if (left) {
+                endLeft = true;
+                endRight = true;
               }
-              endLeft = false;
-            }
-            if (parseInt(key) + diff < this.pictures.length) {
-              let pic1 = this.pictures[parseInt(key) + diff];
-
-              endRight = false;
-            }
-            diff++;
-          } while (!(endLeft && endRight))
+              let i;
+              if (left)
+                i = parseInt(key) - diff;
+              else
+                i = parseInt(key) + diff;
+              if ((left && i > 0) || (!left && i < this.pictures.length)) {
+                let pic1 = this.pictures[i];
+                if (pic1.row !== pic.row && pic.height > pic1.height && Math.abs(pic1.aspectRatio - pic.aspectRatio) < 1 && pic1.scaling < 0.5 && !this.exchanged[pic.name + '_' + pic1.name]) {
+                  this.exchangeLocation(pic, pic1);
+                  this.exchanged[pic.name + '_' + pic1.name] = true;
+                  progressed = true;
+                  break;
+                }
+                if (left)
+                  endLeft = false;
+                else
+                  endRight = false;
+              }
+              // if (i < this.pictures.length) {
+              //   let pic1 = this.pictures[i];
+              //   if (pic1.row !== pic.row && pic.height > pic1.height && Math.abs(pic1.aspectRatio - pic.aspectRatio) < 1 && pic1.scaling < 0.5 && !this.exchanged[pic.name + '_' + pic1.name]) {
+              //     this.exchangeLocation(pic, pic1);
+              //     this.exchanged[pic.name + '_' + pic1.name] = true;
+              //     progressed = true;
+              //     break;
+              //   }
+              //   endRight = false;
+              // }
+              diff++;
+              left = !left;
+            } while (!(endLeft && endRight))
+            if (progressed) break;
+          }
         }
-      }
+      } while (progressed)
       let maxer = {};
       let miner = {};
       // 统计缩放异常的
@@ -191,6 +199,21 @@ export default {
 
       // todo: 超高的像素往周围找匹配的伙伴.像素大而且也偏高的.
       // todo: 一竖加三横
+    },
+    exchangeLocation: function (pp1, pp2) {
+      console.log(pp1.name + ' <---> ' + pp2.name);
+      let il = pp1.index;
+      let ir = pp2.index;
+      let temp = this.pictures[il];
+      this.pictures[il] = this.pictures[ir];
+      this.pictures[ir] = temp;
+      temp = this.pictures[il].index;
+      this.pictures[il].index = this.pictures[ir].index;
+      this.pictures[ir].index = temp;
+      //important :  计算第一行的时候这个行号会改变
+      let rowI = this.pictures[ir].row;
+      this.computeRowHeight(this.pictures[il].row);
+      this.computeRowHeight(rowI);
     },
     loadOnePic: function (name) {
       this.loadedImageCount++;
