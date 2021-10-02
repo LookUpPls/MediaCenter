@@ -80,37 +80,84 @@ export default {
   methods: {
     locationImages: function () {
       // 计算位置
+      let rows = [];
       let row = [];
       let width = this.$refs.images.clientWidth
-      let rateSum = 0;
+      let aspectRatioSum = 0;
       let h;
+      let lastRow;
       for (let key in this.pictures) {
         let pic = this.pictures[key];
-        rateSum += (pic.oWidth / pic.oHeight);
+        pic.index = key;
+        if (!!!pic.aspectRatio)
+          pic.aspectRatio = pic.oWidth / pic.oHeight;
+        aspectRatioSum += pic.aspectRatio;
         row.push(key);
-        h = width / rateSum;
+        h = width / aspectRatioSum;
         console.log(h);
         if (h < this.maxHeight) {
           for (let i = 0; i < row.length; i++) {
             let k = row[i];
             this.pictures[k].height = (h) + 'px';
+            this.pictures[k].row = rows.length;
+            this.pictures[k].scaling = h / this.pictures[k].oHeight;
             this.$set(this.pictures, k, this.pictures[k]);
           }
-          rateSum = 0;
+          aspectRatioSum = 0;
+          rows.push(row);
           row = [];
         }
       }
       // 最后有没凑够一整行的
       if (row.length > 0) {
-        let realWidth = rateSum * this.maxHeight;
+        let realWidth = aspectRatioSum * this.maxHeight;
         if (realWidth / width < 0.7)
           h = this.maxHeight;
         for (let i = 0; i < row.length; i++) {
           let k = row[i];
           this.pictures[k].height = h + 'px';
+          this.pictures[k].row = rows.length;
           this.$set(this.pictures, k, this.pictures[k]);
         }
+        rows.push(row);
       }
+      console.log(this.pictures)
+      console.log(rows)
+      // todo: 像素替换计划, 把小像素但贼大的和大像素但贼小的交换一下位置,注意比例.
+      // 从后边取
+      let wooer;
+      for (let key in this.pictures) {
+        let pic = this.pictures[key];
+        if (pic.scaling > 2) {
+          wooer = pic;
+          // 环绕循环
+          let diff = 1;
+          let endLeft = true;
+          let endRight = true;
+          do {
+             endLeft = true;
+             endRight = true;
+            if (parseInt(key) - diff > 0) {
+
+              endLeft = false;
+            }
+            if (parseInt(key) + diff < this.pictures.length) {
+
+              endRight = false;
+            }
+            diff++;
+          } while (!(endLeft && endRight))
+        }
+      }
+      let maxer = {};
+      let miner = {};
+      // 统计缩放异常的
+      // 交换  交换 row, 交换pictures ,
+      // 记录下来交换过的行
+      // 计算每一行的新高度. row里记录的是pictures的元素index, 交换的时候直接把值交换过了,所以直接取值用就行.
+
+      // todo: 超高的像素往周围找匹配的伙伴.像素大而且也偏高的.
+      // todo: 一竖加三横
     },
     loadOnePic: function (name) {
       this.loadedImageCount++;
