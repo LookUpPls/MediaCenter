@@ -39,9 +39,11 @@ export default {
       picturesIndex: {},
       gridStyle: {},
       loadedImageCount: 0,
-      maxHeight: 435,
+      maxHeight: 499,
       rows: [],
       exchanged: {},
+      // c_aspectRatioDiff:1,
+      // c_scalingDiff:
     }
   },
   components: {
@@ -83,6 +85,15 @@ export default {
   }
   ,
   methods: {
+    quality:function (){
+      let str ='';
+      let sum = 0;
+      for (let key in this.pictures) {
+        str+='|'+this.pictures[key].scaling.toFixed(1);
+        sum+=Math.abs(1-this.pictures[key].scaling);
+      }
+      console.log(sum.toFixed(2)+"|"+str);
+    },
     computeRowHeight: function (rowIndex, h) {
       let width = this.$refs.images.clientWidth
       let row = this.rows[rowIndex];
@@ -106,7 +117,6 @@ export default {
     },
     locationImages: function () {
       // 计算位置
-      console.log("----------------------------------------")
       this.exchanged = {};
       let row = [];
       let width = this.$refs.images.clientWidth
@@ -160,9 +170,12 @@ export default {
                 i = parseInt(key) - diff;
               else
                 i = parseInt(key) + diff;
+              // 交换  交换 row, 交换pictures ,
               if ((left && i > 0) || (!left && i < this.pictures.length)) {
                 let pic1 = this.pictures[i];
-                if (pic1.row !== pic.row && pic.height > pic1.height && Math.abs(pic1.aspectRatio - pic.aspectRatio) < 1 && pic1.scaling < 0.5 && !this.exchanged[pic.name + '_' + pic1.name]) {
+                if (pic1.row !== pic.row && (parseInt(pic.height) / parseInt(pic1.height))>1.2 && Math.abs(pic1.aspectRatio - pic.aspectRatio) > 0.1 && pic1.scaling < 0.8 && !this.exchanged[pic.name + '_' + pic1.name]) {
+                  // 记录下来交换过的行
+                  // 计算每一行的新高度. row里记录的是pictures的元素index, 交换的时候直接把值交换过了,所以直接取值用就行.
                   this.exchangeLocation(pic, pic1);
                   this.exchanged[pic.name + '_' + pic1.name] = true;
                   progressed = true;
@@ -173,16 +186,6 @@ export default {
                 else
                   endRight = false;
               }
-              // if (i < this.pictures.length) {
-              //   let pic1 = this.pictures[i];
-              //   if (pic1.row !== pic.row && pic.height > pic1.height && Math.abs(pic1.aspectRatio - pic.aspectRatio) < 1 && pic1.scaling < 0.5 && !this.exchanged[pic.name + '_' + pic1.name]) {
-              //     this.exchangeLocation(pic, pic1);
-              //     this.exchanged[pic.name + '_' + pic1.name] = true;
-              //     progressed = true;
-              //     break;
-              //   }
-              //   endRight = false;
-              // }
               diff++;
               left = !left;
             } while (!(endLeft && endRight))
@@ -190,13 +193,7 @@ export default {
           }
         }
       } while (progressed)
-      let maxer = {};
-      let miner = {};
-      // 统计缩放异常的
-      // 交换  交换 row, 交换pictures ,
-      // 记录下来交换过的行
-      // 计算每一行的新高度. row里记录的是pictures的元素index, 交换的时候直接把值交换过了,所以直接取值用就行.
-
+      this.quality();
       // todo: 超高的像素往周围找匹配的伙伴.像素大而且也偏高的.
       // todo: 一竖加三横
     },
