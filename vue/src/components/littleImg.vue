@@ -15,8 +15,7 @@ export default {
     gridSize: [Number, String],
     blockWidth: [Number, String],
     blockHeight: [Number, String],
-    allRates: Map,
-    maxHeight: Number
+    maxHeight: [Number, String]
   },
   data: function () {
     return {
@@ -45,13 +44,8 @@ export default {
           that.oW = origin.w;
           that.oH = origin.h;
           let realRate = origin.w / origin.h;
-          let stand;
-          for (let allRatesKey in that.allRates) {
-            stand = that.allRates[allRatesKey];
-            break;
-          }
-          let rw = (origin.w / stand.x);
-          let rh = (origin.h / stand.y);
+          let rw = (origin.w / that.blockWidth);
+          let rh = (origin.h / that.blockHeight);
           let wBTH;
           let ratio;
           if (rw >= rh) {
@@ -82,17 +76,6 @@ export default {
           } else {
             nowRateO = {rate: minD / ratio, x: minD, y: ratio}
           }
-          // let minDiff = Number.MAX_VALUE;
-          // let nowRateO;
-          // // 选出合适的尺寸
-          // for (let allRatesKey in that.allRates) {
-          //   let rateO = that.allRates[allRatesKey];
-          //   let diff = Math.abs(realRate - rateO.rate);
-          //   if (diff < minDiff) {
-          //     nowRateO = rateO;
-          //     minDiff = diff;
-          //   }
-          // }
           console.log(nowRateO)
           let standHeight = that.blockHeight * nowRateO.y;
           let standWidth = that.blockWidth * nowRateO.x;
@@ -108,28 +91,8 @@ export default {
               standWidth *= 2;
             }
           }
-
           that.style.gridColumn = "span " + parseInt(standWidth / that.gridSize);
           that.style.gridRow = "span " + parseInt(standHeight / that.gridSize);
-          // if (realRate < nowRateO.rate) {
-          //   // 高
-          //   // 固定宽度,计算出高度
-          //   let h = standWidth / origin.w * origin.h;
-          //   // 把高度近似成倍数于单位块的.
-          //   h = Math.round(h / standHeight) * standHeight;
-          //   that.style.gridColumn = "span " + parseInt(standWidth / that.gridSize);
-          //   that.style.gridRow = "span " + parseInt(h / that.gridSize);
-          //   that.computedW = standWidth;
-          //   that.computedH = h;
-          // } else {
-          //   // 宽
-          //   let w = standHeight / origin.h * origin.w;
-          //   w = Math.round(w / standWidth) * standWidth;
-          //   that.style.gridColumn = "span " + parseInt(w / that.gridSize);
-          //   that.style.gridRow = "span " + parseInt(standHeight / that.gridSize);
-          //   that.computedW = w;
-          //   that.computedH = standHeight;
-          // }
         })
   },
   methods: {

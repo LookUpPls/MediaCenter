@@ -8,16 +8,15 @@
     </div>
     <div>
       <p class="title">图片<span>共21个</span></p>
-      <div class="imgs"
+      <div class="imgs" @resize="resize"
            v-bind:style="{ display: 'grid', 'grid-template-rows': 'repeat(auto-fill,16px)', 'grid-template-columns': 'repeat(auto-fill,16px)',}">
-        <littleImg @command="onCommand" :blockHeight="blockHeight" :blockWidth="blockWidth" :allRates=allRates
+        <littleImg @command="onCommand" :blockHeight="blockHeight" :blockWidth="blockWidth"
                    :gridSize="gridSize"
                    max-height=450
                    :src="folder.src" name="folder.name"
                    v-for="folder in folderData"></littleImg>
       </div>
     </div>
-    <a-button @click="testMock1">{{ testMockVal }}</a-button>
   </div>
 </template>
 
@@ -33,11 +32,12 @@ export default {
   name: 'home',
   data: function () {
     return {
-      gridSize: 28,
+      gridSize: 38,
       testMockVal: "test",
       folderData: {},
       picData: {},
-      gridStyle: {}
+      gridStyle: {},
+      blockSize : 312
     }
   },
   components: {
@@ -46,37 +46,24 @@ export default {
   },
   computed: {
     blockWidth: function () {
-      let size = 312;
-      let remainder = size % this.gridSize;
-      let widthGridCount = parseInt(size / this.gridSize);
+      let remainder = this.blockSize % this.gridSize;
+      let widthGridCount = parseInt(this.blockSize / this.gridSize);
+      // let remainderEach = remainder / widthGridCount
+      // return blockSize + parseInt(remainderEach);
+      // 让 单位长宽正好是gridSize的整数倍
       if (remainder > this.gridSize / 2) {
-        size = size + this.gridSize - remainder;
-        widthGridCount++;
+        this.blockSize = this.blockSize + this.gridSize - remainder;
+        // widthGridCount++;
       } else {
-        size -= remainder;
-        widthGridCount--;
+        this.blockSize -= remainder;
+        // widthGridCount--;
       }
-      return size
+      return this.blockSize
     },
     blockHeight: function () {
-      return this.gridSize * Math.round(this.blockWidth / this.gridSize * 0.9);
+      return this.gridSize * Math.round(this.blockWidth / this.gridSize * 0.8);
     },
-    allRates: function () {
-      let t = {};
-      // todo: 最宽能放下几个就用几个替换掉10
-      for (let i = 1; i <= 4; i++) {
-        for (let j = 1; j <= 4; j++) {
-          let rate = (i * this.blockWidth) / (j * this.blockHeight);
-          let k = 'n' + (rate).toFixed(3);
-          if (typeof t[k] !== "undefined" && t[k].x * t[k].y <= i * j)
-            continue;
-          t[k] = {rate: rate, x: i, y: j};
-        }
-      }
-      return t;
-    }
-  }
-  ,
+  },
   created() {
     getDir().then(response => {
       this.$data.folderData = response.data.folderData;
@@ -85,16 +72,18 @@ export default {
       console.log(err);
       // reject(false);
     })
-  }
-  ,
+  },
   methods: {
+    resize:function (e){
+      console.log('resize')
+      console.log(e)
+    },
     onCommand: function (info) {
       switch (info.order) {
         case "closeVideo":
           break;
       }
-    }
-    ,
+    },
     testMock1: function () {
       this.testMockVal = "clicked";
       console.log("clicked");
