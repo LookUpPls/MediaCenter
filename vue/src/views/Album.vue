@@ -12,6 +12,7 @@
            v-bind:style="{ display: 'grid', 'grid-template-rows': 'repeat(auto-fill,16px)', 'grid-template-columns': 'repeat(auto-fill,16px)',}">
         <littleImg @command="onCommand" :blockHeight="blockHeight" :blockWidth="blockWidth" :allRates=allRates
                    :gridSize="gridSize"
+                   max-height=450
                    :src="folder.src" name="folder.name"
                    v-for="folder in folderData"></littleImg>
       </div>
